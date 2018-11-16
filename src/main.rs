@@ -38,6 +38,7 @@ enum Representation {
     Unicode { word: String },
     Hashtag { word: String },
     Mention { word: String },
+    Url { word: String },
 }
 
 #[derive(Debug,Serialize,Deserialize)]
