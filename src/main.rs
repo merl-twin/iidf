@@ -10,7 +10,7 @@ extern crate snap;
 
 use clap::Arg;
 use std::io::{BufReader,BufRead,BufWriter,Read,Write};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap,BTreeSet};
 use std::fs::File;
 use std::path::PathBuf;
 
@@ -123,7 +123,8 @@ fn main() -> Result<(),Error> {
     for row in BufReader::new(snap::Reader::new(BufReader::new(File::open(file).map_err(Error::FileOpen)?))).lines() {
         let js = row.map_err(Error::Read)?;
         let doc: Doc = serde_json::from_str(&js).map_err(Error::Json)?;
-        for w in doc.words {
+        let doc_word_set = doc.words.into_iter().collect::<BTreeSet<_>>();
+        for w in doc_word_set {
             let mut cnt = data.words.entry(w).or_insert(0);
             *cnt += 1;
         }
