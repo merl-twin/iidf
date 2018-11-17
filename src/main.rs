@@ -123,8 +123,8 @@ fn main() -> Result<(),Error> {
     for row in BufReader::new(snap::Reader::new(BufReader::new(File::open(file).map_err(Error::FileOpen)?))).lines() {
         let js = row.map_err(Error::Read)?;
         let doc: Doc = serde_json::from_str(&js).map_err(Error::Json)?;
-        let doc_word_set = doc.words.into_iter().collect::<BTreeSet<_>>();
-        for w in doc_word_set {
+        //let doc_word_set = doc.words.into_iter().collect::<BTreeSet<_>>();
+        for w in doc.words {
             let mut cnt = data.words.entry(w).or_insert(0);
             *cnt += 1;
         }
