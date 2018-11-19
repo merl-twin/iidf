@@ -34,11 +34,16 @@ enum Representation {
         stem: Option<String>
     },
     Number { word: String },
+    Alphanumeric { word: String },
     Emoji { word: String },
     Unicode { word: String },
     Hashtag { word: String },
     Mention { word: String },
     Url { word: String },
+    BBCode {
+        text: Vec<Representation>,
+        data: Vec<Representation>,
+    },
 }
 
 #[derive(Debug,Serialize,Deserialize)]
@@ -124,7 +129,10 @@ fn main() -> Result<(),Error> {
         let js = row.map_err(Error::Read)?;
         let doc: Doc = serde_json::from_str(&js).map_err(Error::Json)?;
         //let doc_word_set = doc.words.into_iter().collect::<BTreeSet<_>>();
-        for w in doc.words {
+        for w in doc.words.into_iter().flat_map(|w| match w {
+            Representation::BBCode { text, data: _ } => text.into_iter(),
+            _ => vec![w].into_iter(),
+        }) {
             let mut cnt = data.words.entry(w).or_insert(0);
             *cnt += 1;
         }
