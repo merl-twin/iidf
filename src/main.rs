@@ -33,8 +33,9 @@ enum Representation {
         #[serde(skip_serializing_if = "Option::is_none")]
         stem: Option<String>
     },
+    Numerical { word: String, subtype: String },
     Number { word: String },
-    Alphanumeric { word: String },
+    StrangeWord { word: String },
     Emoji { word: String },
     Unicode { word: String },
     Hashtag { word: String },
